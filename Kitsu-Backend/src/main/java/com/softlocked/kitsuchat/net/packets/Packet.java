@@ -28,12 +28,17 @@ public class Packet {
         return id;
     }
 
-    public List<Byte> get() {
+    public byte[] get() {
         List<Byte> list = new ArrayList<>();
         list.add(id);
         list.addAll(data);
 
-        return list;
+        byte[] bytes = new byte[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            bytes[i] = list.get(i);
+        }
+
+        return bytes;
     }
 
     public void add(byte b) {
@@ -48,5 +53,12 @@ public class Packet {
 
     public void add(List<Byte> bytes) {
         data.addAll(bytes);
+    }
+
+    @Override
+    public String toString() {
+        return "Packet{" +
+                "id=" + id +
+                '}';
     }
 }

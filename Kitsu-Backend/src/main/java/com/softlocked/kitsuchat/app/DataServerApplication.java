@@ -1,6 +1,10 @@
 package com.softlocked.kitsuchat.app;
 
+import com.softlocked.kitsuchat.net.TCPClient;
 import com.softlocked.kitsuchat.net.TCPDataServer;
+import com.softlocked.kitsuchat.net.packets.Packet;
+
+import java.io.IOException;
 
 /**
  * The {@code DataServerApplication} class is the main class of the Kitsu-Backend application.
@@ -29,5 +33,28 @@ public class DataServerApplication {
         server.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
+
+
+        // TESTING: CLIENT
+        TCPClient client = new TCPClient("localhost", port);
+        client.connect();
+
+        // create a thread to send packets
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Packet packet = new Packet((byte) 0x01, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 });
+                try {
+                    client.sendPacket(packet);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
     }
 }
